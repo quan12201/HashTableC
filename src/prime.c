@@ -1,0 +1,11 @@
+#include <math.h>
+
+#include <prime.h>
+
+int is_prime(const int x) {
+
+}
+
+int next_prime(int x) {
+    
+}
