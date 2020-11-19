@@ -3,6 +3,8 @@
 
 #include "hash_table.h"
 
+const int ht_prime_1, ht_prime_2;
+
 static ht_item* ht_new_item(const char* k, const char* v) {
     ht_item* i = malloc(sizeof(ht_item));
     i-> key = strdup(k);
@@ -101,21 +103,30 @@ void ht_delete(ht_hash_table* ht, const char* key) {
 }
 
 static ht_hash_table* ht_new_sized(const int base_size) {
-
+    ht_hash_table* ht = xmalloc(sizeof(ht_hash_table));
+    ht->size = next_prime(base_size);
+    ht->count = 0;
+    ht->items = xcalloc((size_t)ht->size, sizeof(ht_item*));
+    return ht;
 }
 
+int initial_base_size;
 ht_hash_table* ht_new() {
-
+    return ht_new_sized(initial_base_size);
 }
 
 static void ht_resize(ht_hash_table* ht, const int base_size) {
+    if(base_size < initial_base_size) {
+        return;
+    }
+    ht_hash_table* new_ht = ht_new_sized(base_size);
+    ht->count = new_ht->count;
+    const int temp_size = ht->size;
+    ht->size = new_ht->size;
+    new_ht->size = temp_size;
+    ht_item** temp_items = ht->items;
+    ht->items = new_ht->items;
+    new_ht->items = temp_items;
 
-}
-
-static void resize_up(ht_hash_table* ht) {
-
-}
-
-static void resize_down(ht_hash_table* ht) {
-
+    ht_del_hash_table(new_ht);
 }
